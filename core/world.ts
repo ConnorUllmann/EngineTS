@@ -54,6 +54,9 @@ export class World {
     // mouse/keyboard/gamepad updates will still be received during the period this function returns false
     public canUpdateEntities: (() => boolean) | null = null;
 
+    // if assigned, only this entity will update & draw
+    public singletonEntity: Entity | null = null;
+
     private interval: any | null = null;
 
     // create in ngOnInit and not in the component's constructor
@@ -143,6 +146,16 @@ export class World {
         this._millisecondsLastUpdate = Date.now() - startMs;
     }
 
+    private updateEntity = (o: Entity) => {
+        if(o.active && !o.destroyed) {
+            o.update()
+            for(let _class in o.componentsByClass)
+                o.componentsByClass[_class].forEach((c: IComponent) => { if(c.active && !c.removed && c.update) c.update(); });
+        }
+    }
+    private postUpdateEntity = (o: Entity) => { if(o.active && !o.destroyed) o.postUpdate() };
+    private drawEntity = (o: Entity) => { if(o.visible && !o.destroyed) o.draw() };
+
     private updateDelta(): void {
         if(this._firstUpdateTimestamp == null)
             this._firstUpdateTimestamp = Date.now();
@@ -166,16 +179,16 @@ export class World {
 
         this.sortEntitiesByUpdateOrder();
 
-        this.entities.forEach((o: Entity) => {
-            if(o.active && !o.destroyed) {
-                o.update()
-                for(let _class in o.componentsByClass)
-                    o.componentsByClass[_class].forEach((c: IComponent) => { if(c.active && !c.removed && c.update) c.update(); });
-            }
-        });
+        if(this.singletonEntity)
+            this.updateEntity(this.singletonEntity);
+        else
+            this.entities.forEach(this.updateEntity);
 
         // TODO remove
-        this.entities.forEach((o: Entity) => { if(o.active && !o.destroyed) o.postUpdate() });
+        if(this.singletonEntity)
+            this.postUpdateEntity(this.singletonEntity);
+        else
+            this.entities.forEach(this.postUpdateEntity);
 
         for(const id in this.entityToRemoveById) {
             const entity = this.entityToRemoveById[id];
@@ -194,7 +207,11 @@ export class World {
 
     private drawEntities() {
         this.sortEntitiesByUpdateOrder();
-        this.entities.forEach((o: Entity) => { if(o.visible && !o.destroyed) o.draw() });
+
+        if(this.singletonEntity)
+            this.drawEntity(this.singletonEntity);
+        else
+            this.entities.forEach(this.drawEntity);
     }
 
     // returns the id of the entity
