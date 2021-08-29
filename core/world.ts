@@ -94,6 +94,16 @@ export class World {
         this.startLoop();
     }
 
+    // removes all references to all entities without destroying them
+    public dereferenceAllEntities() {
+        this.entities.clear();
+        Object.keys(this.entityById).forEach(key => delete this.entityById[key])
+        Object.keys(this.entitiesByClass).forEach(key => delete this.entitiesByClass[key])
+        Object.keys(this.entityToAddById).forEach(key => delete this.entityToAddById[key])
+        Object.keys(this.entityToRemoveById).forEach(key => delete this.entityToRemoveById[key])
+        this.singletonEntity = null;
+    }
+
     public startLoop() {
         if(this.interval)
             return;
@@ -184,7 +194,6 @@ export class World {
         else
             this.entities.forEach(this.updateEntity);
 
-        // TODO remove
         if(this.singletonEntity)
             this.postUpdateEntity(this.singletonEntity);
         else
