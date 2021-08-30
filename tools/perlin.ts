@@ -102,11 +102,15 @@ export class Perlin {
         return this;
     };
 
-    renderToContext(context: CanvasRenderingContext2D, position: IPoint=Geometry.Point.Zero) {
+    renderToContext(context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D, position: IPoint=Geometry.Point.Zero) {
         this.perlinPixelGrid.renderToContext(context, position);
     };
 
     draw(world: World, position: IPoint=Geometry.Point.Zero, scale: IPoint=Geometry.Point.One) {
         this.perlinPixelGrid.draw(world, position, scale);
     };
+
+    getImageData(): ImageData {
+        return this.perlinPixelGrid.getImageData();
+    }
 }

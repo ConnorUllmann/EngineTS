@@ -66,7 +66,7 @@ export class PixelGrid implements IGrid<Color> {
         return this;
     };
 
-    public renderToContext(context: CanvasRenderingContext2D,
+    public renderToContext(context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
         position: IPoint=Geometry.Point.Zero,
         scale: IPoint=Geometry.Point.One,
         section: IRectangle={ x:0, y:0, w:this.canvas.width, h:this.canvas.height }
