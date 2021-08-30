@@ -9,7 +9,7 @@ export class Camera extends Rectangle {
 
     // TODO: add ability to set zoom level; check if setting screen resolution is all you need to do?
 
-    constructor(private readonly canvas: HTMLCanvasElement) {
+    constructor(private readonly canvas: { width: number, height: number, clientWidth: number, clientHeight: number }) {
         super(0, 0, canvas.width, canvas.height);
     }
 

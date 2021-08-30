@@ -38,10 +38,10 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 export function millisecondsToExecute(call: () => any): number {
-    const start = Date.now();
+    const start = performance.now();
     call();
-    const end = Date.now();
-    return end - start;
+    const end = performance.now();
+    return Math.round((end - start) * 10) / 10;
 }
 
 export async function sleep(milliseconds: number) {
@@ -53,13 +53,6 @@ export function escapeRegex(text: string): string {
     return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-export function saveFile(text: string, fileName: string, contentType: string='text/plain') {
-    var a = document.createElement("a");
-    var file = new Blob([text], {type: contentType});
-    a.href = URL.createObjectURL(file);
-    a.download = fileName;
-    a.click();
-}
 
 export const tau: number = Math.PI * 2;
 export const angle360: number = tau;

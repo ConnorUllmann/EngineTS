@@ -1,21 +1,21 @@
 import { Color } from '@engine-ts/visuals/color';
 import { IPoint, IRectangle } from '@engine-ts/geometry/interfaces';
-import { World } from '@engine-ts/core/world';
 import { Geometry } from '@engine-ts/geometry/geometry';
 import { IGrid, Grid } from '@engine-ts/geometry/grid';
 import { Point } from '@engine-ts/geometry/point';
 import { CompassDirection, CompassDirectionGroup } from '@engine-ts/geometry/compass';
 import { DeepReadonly } from '@engine-ts/core/utils';
+import { CameraContext } from '@engine-ts/visuals/camera-context';
 
 export class PixelGrid implements IGrid<Color> {
-    public context: CanvasRenderingContext2D;
+    public context: OffscreenCanvasRenderingContext2D;
     private imageData: ImageData;
     public imageSmoothingEnabled: boolean = false;
 
     public get w(): number { return this.canvas.width; }
     public get h(): number { return this.canvas.height; }
 
-    constructor(public readonly canvas: HTMLCanvasElement) {
+    constructor(public readonly canvas: OffscreenCanvas) {
         this.context = canvas.getContext("2d")!;
         this.refreshImageData();
     }
@@ -76,14 +76,14 @@ export class PixelGrid implements IGrid<Color> {
             position.x, position.y, section.w * scale.x, section.h * scale.y);
     };
 
-    public draw(world: World, position: IPoint=Geometry.Point.Zero, scale: IPoint=Geometry.Point.One, section?: IRectangle) {
-        const imageSmoothingEnabled = world.context.imageSmoothingEnabled;
-        world.context.imageSmoothingEnabled = this.imageSmoothingEnabled;
+    public draw(cameraContext: CameraContext, position: IPoint=Geometry.Point.Zero, scale: IPoint=Geometry.Point.One, section?: IRectangle) {
+        const imageSmoothingEnabled = cameraContext.context.imageSmoothingEnabled;
+        cameraContext.context.imageSmoothingEnabled = this.imageSmoothingEnabled;
         if(section != null)
-            this.renderToContext(world.context, Geometry.Point.Subtract(position, world.camera), scale, section);
+            this.renderToContext(cameraContext.context, Geometry.Point.Subtract(position, cameraContext.camera), scale, section);
         else
-            this.renderToContext(world.context, Geometry.Point.Subtract(position, world.camera), scale);
-        world.context.imageSmoothingEnabled = imageSmoothingEnabled;
+            this.renderToContext(cameraContext.context, Geometry.Point.Subtract(position, cameraContext.camera), scale);
+        cameraContext.context.imageSmoothingEnabled = imageSmoothingEnabled;
     };
 
     public isInside({ x, y }: IPoint): boolean {

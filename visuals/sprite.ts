@@ -5,7 +5,8 @@ import { Geometry } from '@engine-ts/geometry/geometry';
 import { IPoint } from '@engine-ts/geometry/interfaces';
 import { LoopTimer, Timer } from '@engine-ts/tools/timer';
 import { WeightRange } from '@engine-ts/tools/weight-range';
-import { Draw, ImagesCameraContext } from './draw';
+import { ImagesCameraContext } from './camera-context';
+import { Draw } from './draw';
 
 export interface ISpriteFrame {
     indices: IPoint,

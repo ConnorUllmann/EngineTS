@@ -1,27 +1,19 @@
 import { Color } from './color';
-import { World } from '@engine-ts/core/world';
 import { tau, Halign, Valign, DeepReadonly, enumToList } from '@engine-ts/core/utils';
 import { ColorStopArray } from './color-stop-array';
 import { BlendMode } from './blend-mode';
-import { ICircle, IPoint, ITriangle, IRectangle, ILine, IRay, ISegment, IPolygon } from '@engine-ts/geometry/interfaces';
+import { ICircle, IPoint, ITriangle, IRectangle, ILine, IRay, ISegment, IPolygon, PointPairType } from '@engine-ts/geometry/interfaces';
 // TODO: use IPoint everywhere instead
 import { Point } from '@engine-ts/geometry/point';
 import { Geometry, Shape } from '@engine-ts/geometry/geometry';
 import { Images } from '@engine-ts/core/images';
+import { CameraContext, ImagesCameraContext } from './camera-context';
+import { Rectangle } from '@engine-ts/geometry/rectangle';
 
 export type FillStyle = DeepReadonly<Color> | string | null;
 export type StrokeStyle = FillStyle;
 export type HalignAll = Halign | "left" | "center" | "right" | "start" | "end";
 export type ValignAll = Valign | "top" | "hanging" | "middle" | "alphabetic" | "ideographic" | "bottom";
-
-export interface CameraContext {
-    camera: IPoint,
-    context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
-}
-
-export interface ImagesCameraContext extends CameraContext {
-    images: Images
-}
 
 export enum OutlinePlacement {
     FullyInner='FullyInner',
@@ -421,11 +413,11 @@ export class Draw {
         context.stroke();
     }
 
-    public static Line(world: World, line: DeepReadonly<ILine>, strokeStyle: StrokeStyle=null, lineWidth: number=1) {
+    public static Line(world: CameraContext, line: DeepReadonly<ILine>, strokeStyle: StrokeStyle=null, lineWidth: number=1) {
         if(lineWidth <= 0)
             return;
 
-        const points = world.camera.lineIntersections(line);
+        const points = Rectangle.intersections(world.camera, line, PointPairType.LINE);
         if(points.length < 2)
             return;
 
@@ -439,12 +431,12 @@ export class Draw {
         context.stroke();
     };
 
-    public static Ray(world: World, ray: DeepReadonly<IRay>, strokeStyle: StrokeStyle=null, lineWidth: number=1) {
+    public static Ray(world: CameraContext, ray: DeepReadonly<IRay>, strokeStyle: StrokeStyle=null, lineWidth: number=1) {
         if(lineWidth <= 0)
             return;
 
         const context = world.context;
-        const points = world.camera.rayIntersections(ray);
+        const points = Rectangle.intersections(world.camera, ray, PointPairType.RAY);
         if(points.length === 1) {
             context.beginPath();
             context.moveTo(ray.a.x - world.camera.x, ray.a.y - world.camera.y);

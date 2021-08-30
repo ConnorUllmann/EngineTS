@@ -3,18 +3,17 @@ import { PixelGrid } from './pixel-grid';
 import { Color } from '@engine-ts/visuals/color';
 import { IPoint } from '@engine-ts/geometry/interfaces';
 import { Geometry } from '@engine-ts/geometry/geometry';
-import { World } from '@engine-ts/core/world';
-import { createCanvas } from '@engine-ts/visuals/create-canvas';
 import { RNG } from '@engine-ts/core/rng';
+import { CameraContext } from '@engine-ts/visuals/camera-context';
 
 export class Perlin {
-    private noiseCanvas: HTMLCanvasElement;
-    private perlinCanvas: HTMLCanvasElement;
+    private noiseCanvas: OffscreenCanvas;
+    private perlinCanvas: OffscreenCanvas;
     private perlinPixelGrid: PixelGrid;
 
     constructor(public readonly w: number, public readonly h: number, alpha: number=1, scale?: number, private readonly rng?: RNG) {
-        this.noiseCanvas = createCanvas(w, h);
-        this.perlinCanvas = createCanvas(w, h);
+        this.noiseCanvas = new OffscreenCanvas(w, h);
+        this.perlinCanvas = new OffscreenCanvas(w, h);
         this.refreshRandomNoise(alpha);
         this.refreshPerlinNoise(scale == null ? this.noiseCanvas.width : scale);
         this.perlinPixelGrid = new PixelGrid(this.perlinCanvas);
@@ -106,8 +105,8 @@ export class Perlin {
         this.perlinPixelGrid.renderToContext(context, position);
     };
 
-    draw(world: World, position: IPoint=Geometry.Point.Zero, scale: IPoint=Geometry.Point.One) {
-        this.perlinPixelGrid.draw(world, position, scale);
+    draw(cameraContext: CameraContext, position: IPoint=Geometry.Point.Zero, scale: IPoint=Geometry.Point.One) {
+        this.perlinPixelGrid.draw(cameraContext, position, scale);
     };
 
     getImageData(): ImageData {
