@@ -39,8 +39,7 @@ export class World {
     public get isFirstFrame(): boolean { return this._isFirstFrame; }
     public _firstUpdateTimestamp: number | null = null;
     public get firstUpdateTimestamp(): number | null { return this._firstUpdateTimestamp; }
-    public _lastUpdateTimestamp: number = 0;
-    public get lastUpdateTimestamp(): number | null { return this._lastUpdateTimestamp; }
+    public _lastUpdatePerformanceTimestamp: number = 0;
     public _delta: number = 0;
     public fixedFrameRate: boolean = true;
     public get delta(): number { return this.fixedFrameRate ? this.millisecondsPerFrame : this._delta; }
@@ -169,10 +168,10 @@ export class World {
     private updateDelta(): void {
         if(this._firstUpdateTimestamp == null)
             this._firstUpdateTimestamp = Date.now();
-        const now = Date.now();
-        if(this._lastUpdateTimestamp != 0)
-            this._delta = now - this._lastUpdateTimestamp;
-        this._lastUpdateTimestamp = now;
+        const now = performance.now();
+        if(this._lastUpdatePerformanceTimestamp != 0)
+            this._delta = now - this._lastUpdatePerformanceTimestamp;
+        this._lastUpdatePerformanceTimestamp = now;
     }
 
     private updateEntities(): void {
