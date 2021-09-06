@@ -121,11 +121,11 @@ export class World {
         this.interval = null;
     }
 
-    public setCanvasSize(width?: number, height?: number) {
-        if(width != null)
-            this.canvas.style.width = `${width}px`;
-        if(height != null)
-            this.canvas.style.height = `${height}px`;
+    // sets the canvas so it is fully contained inside the parent element
+    public setCanvasContained() {
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.canvas.style.objectFit = 'contain';
     }
 
     private setCanvasResolution(width: number, height: number) {

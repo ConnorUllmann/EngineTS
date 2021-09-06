@@ -96,11 +96,27 @@ export class Mouse extends Point implements IMouse {
                 mouse.x = (mouseEvent.clientX - rect.left) * canvasScale.x;
                 mouse.y = (mouseEvent.clientY - rect.top) * canvasScale.y;
             } else {
-                const clientScaledWidth = mouse.canvas.clientWidth / mouse.canvas.clientHeight * mouse.camera.h;
-                const marginsWidthTotal = clientScaledWidth - mouse.camera.w;
-                const xMouseShifted = (mouseEvent.clientX - rect.left) * canvasScale.y
-                mouse.x = xMouseShifted - marginsWidthTotal/2;
-                mouse.y = (mouseEvent.clientY - rect.top) * canvasScale.y;
+                if(mouse.canvas.style.objectFit === 'contain') {
+                    const wExpected = mouse.canvas.clientHeight / mouse.canvas.height * mouse.canvas.width;
+                    if(mouse.canvas.clientWidth > wExpected) {
+                        const smallerCanvasScale = canvasScale.y;
+                        const marginsWidthTotal = mouse.canvas.clientWidth - wExpected;
+                        mouse.x = (mouseEvent.clientX - (rect.left + marginsWidthTotal/2)) * smallerCanvasScale
+                        mouse.y = (mouseEvent.clientY - rect.top) * smallerCanvasScale
+                    } else {
+                        const hExpected = mouse.canvas.clientWidth / mouse.canvas.width * mouse.canvas.height;
+                        const smallerCanvasScale = canvasScale.x;
+                        const marginsHeightTotal = mouse.canvas.clientHeight - hExpected;
+                        mouse.x = (mouseEvent.clientX - rect.left) * smallerCanvasScale
+                        mouse.y = (mouseEvent.clientY - (rect.top + marginsHeightTotal/2)) * smallerCanvasScale
+                    }                    
+                } else {
+                    const clientScaledWidth = mouse.canvas.clientWidth / mouse.canvas.clientHeight * mouse.camera.h;
+                    const marginsWidthTotal = clientScaledWidth - mouse.camera.w;
+                    const xMouseShifted = (mouseEvent.clientX - rect.left) * canvasScale.y
+                    mouse.x = xMouseShifted - marginsWidthTotal/2;
+                    mouse.y = (mouseEvent.clientY - rect.top) * canvasScale.y;
+                }
             }
             this.moved = true;
         }, false);
