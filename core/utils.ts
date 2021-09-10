@@ -110,7 +110,7 @@ export function spiral(n: number): { x: number, y: number } | null {
 // 
 // -540 % 360 = -180
 // moduloSafe(-540, 360) = 180
-export function moduloSafe(value: number, modulo: number) { return ((value % modulo) + modulo) % modulo; }
+export function moduloSafe(value: number, modulo: number) { return modulo == 0 ? 0 : ((value % modulo) + modulo) % modulo; }
 
 // https://stackoverflow.com/a/55365334
 export function getGuidPart(_rng?: RNG): string {

@@ -109,7 +109,7 @@ export class Mouse extends Point implements IMouse {
                         const marginsHeightTotal = mouse.canvas.clientHeight - hExpected;
                         mouse.x = (mouseEvent.clientX - rect.left) * smallerCanvasScale
                         mouse.y = (mouseEvent.clientY - (rect.top + marginsHeightTotal/2)) * smallerCanvasScale
-                    }                    
+                    }
                 } else {
                     const clientScaledWidth = mouse.canvas.clientWidth / mouse.canvas.clientHeight * mouse.camera.h;
                     const marginsWidthTotal = clientScaledWidth - mouse.camera.w;
