@@ -1103,6 +1103,9 @@ export class Geometry {
                 && ax < bx + bw 
                 && ay < by + bh
         },
+        CirclePoint: (cx: number, cy: number, cr: number, px: number, py: number): boolean => {
+            return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= cr * cr;
+        }
     }
 
     // TODO:
