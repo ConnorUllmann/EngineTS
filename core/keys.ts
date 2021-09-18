@@ -1,3 +1,5 @@
+import { enumToList } from "./utils";
+
 export enum Key {
     BACKSPACE = 'BACKSPACE',
     TAB = 'TAB',
@@ -136,6 +138,7 @@ export enum Key {
     BAR = 'BAR',
     PIPE = 'PIPE'
 };
+export const Keys = enumToList(Key);
 
 export const KeysByKeyCode: { [keyCode: number]: Key[] } = {
     8: [Key.BACKSPACE],

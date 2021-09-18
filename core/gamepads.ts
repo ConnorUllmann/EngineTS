@@ -1,6 +1,6 @@
 import { Point } from '@engine-ts/geometry/point';
 import { IPoint } from '@engine-ts/geometry/interfaces';
-import { Button } from './buttons';
+import { AnalogDirectionButton, AnalogDirectionButtons, Button } from './buttons';
 import { Geometry } from '@engine-ts/geometry/geometry';
 
 export class Gamepads {
@@ -103,8 +103,33 @@ export class Gamepads {
                     this.releasedByIndex[gamepadId][button] = isReleased;
                 }
             }
+
+            for(let button of AnalogDirectionButtons) {
+                const wasDown = this.tryGetValueOrDefaultFromDict(
+                    this.tryGetValueOrDefaultFromDict(this.downByIndex, gamepadId, {}),
+                    button,
+                    false
+                );
+                const isDown = this.isAnalogDirectionDownByButton[button](gamepadId);
+                const isPressed = isDown && !wasDown;
+                const isReleased = !isDown && wasDown;
+                this.downByIndex[gamepadId][button] = isDown;
+                this.pressedByIndex[gamepadId][button] = isPressed;
+                this.releasedByIndex[gamepadId][button] = isReleased;
+            }
         }
     };
+
+    private isAnalogDirectionDownByButton: { [key in AnalogDirectionButton]: (gamepadId: number) => boolean } = {
+        [Button.LEFT_ANALOG_UP]: gamepadId => this.leftAnalogStickByIndex[gamepadId].y < 0,
+        [Button.LEFT_ANALOG_RIGHT]: gamepadId => this.leftAnalogStickByIndex[gamepadId].x > 0,
+        [Button.LEFT_ANALOG_DOWN]: gamepadId => this.leftAnalogStickByIndex[gamepadId].y > 0,
+        [Button.LEFT_ANALOG_LEFT]: gamepadId => this.leftAnalogStickByIndex[gamepadId].x < 0,
+        [Button.RIGHT_ANALOG_UP]: gamepadId => this.rightAnalogStickByIndex[gamepadId].y < 0,
+        [Button.RIGHT_ANALOG_RIGHT]: gamepadId => this.rightAnalogStickByIndex[gamepadId].x > 0,
+        [Button.RIGHT_ANALOG_DOWN]: gamepadId => this.rightAnalogStickByIndex[gamepadId].y > 0,
+        [Button.RIGHT_ANALOG_LEFT]: gamepadId => this.rightAnalogStickByIndex[gamepadId].x < 0,
+    }
 
     private tryGetValueOrDefaultFromDict<T>(dict: { [id: string]: T }, key: string, defaultValue: T): T {
         if(dict == null || !(key in dict))

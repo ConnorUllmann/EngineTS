@@ -1,5 +1,4 @@
 import { Point } from '../geometry/point';
-import { Geometry } from '@engine-ts/geometry/geometry';
 import { IPoint } from '@engine-ts/geometry/interfaces';
 import { Camera } from './camera';
 import { DeepReadonly } from './utils';
@@ -19,6 +18,7 @@ export interface IMouse {
     readonly moved: boolean
     readonly focus: boolean
     readonly scroll: DeepReadonly<IPoint>
+    readonly scrollPrevious: DeepReadonly<IPoint>
     readonly touchscreen: boolean
     readonly screenPosition: DeepReadonly<IPoint>
     readonly worldPosition: DeepReadonly<IPoint>
@@ -35,6 +35,7 @@ export class MouseSnapshot implements IMouse {
     moved: boolean = false;
     focus: boolean = false;
     scroll: Point = new Point();
+    scrollPrevious: Point = new Point();
     touchscreen: boolean = false;
     screenPosition: Point = new Point();
     worldPosition: Point = new Point();
@@ -49,6 +50,7 @@ export class MouseSnapshot implements IMouse {
         this.rightDown = snapshot.rightDown;
         this.moved = snapshot.moved;
         this.focus = snapshot.focus;
+        this.scrollPrevious.setTo(this.scroll);
         this.scroll.setTo(snapshot.scroll);
         this.touchscreen = snapshot.touchscreen;
         this.screenPosition.setTo(snapshot.screenPosition);
@@ -68,6 +70,7 @@ export class Mouse extends Point implements IMouse {
     public moved: boolean = false;
     public focus: boolean = false;
     public scroll: Point = new Point();
+    public scrollPrevious: Point = new Point();
     public get touchscreen(): boolean { return 'ontouchstart' in document.documentElement; }
 
     // position relative to the screen, e.g. always (0, 0) whenever the mouse is on the top-left pixel
@@ -157,6 +160,8 @@ export class Mouse extends Point implements IMouse {
         this.leftPressed = false;
         this.rightReleased = false;
         this.rightPressed = false;
+        this.scrollPrevious.x = this.scroll.x;
+        this.scrollPrevious.y = this.scroll.y;
         this.scroll.x = 0;
         this.scroll.y = 0;
         this.moved = false;
