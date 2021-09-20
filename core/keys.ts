@@ -482,3 +482,4 @@ export const CharactersByKeyCode: { [key: number]: { lower: string, upper: strin
     [220]: { lower: '\\', upper: '|' },
     [221]: { lower: ']', upper: '}' },
     [222]: { lower: '\'', upper: '"' },
+}
