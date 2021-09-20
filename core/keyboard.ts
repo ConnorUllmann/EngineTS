@@ -1,4 +1,4 @@
-import { Key, KeysByKeyCode } from './keys';
+import { KeysForKeyCode } from './keys';
 
 export class Keyboard {
     public readonly down: { [id: string]: boolean } = {};
@@ -100,45 +100,8 @@ export class Keyboard {
     };
 
     private static keysForKeyEvent(keyCode: number, code?: string): (string | number)[] {
-        let key = String.fromCharCode(keyCode);
-        let result = [keyCode, key.toLowerCase()];
-
-        if (keyCode in KeysByKeyCode)
-            result.push(...KeysByKeyCode[keyCode]);
-
-        switch(keyCode)
-        {
-            case 13:
-                if(code === 'Enter')
-                    result.push(Key.ENTER, Key.RETURN);
-                if(code === 'NumpadEnter')
-                    result.push(Key.NUMPAD_ENTER);
-                break;
-            case 16:
-                if (code === 'ShiftLeft')
-                    result.push(Key.LSHIFT);
-                else if (code === 'ShiftRight')
-                    result.push(Key.RSHIFT);
-                break;
-            case 17:
-                if (code === 'ControlLeft')
-                    result.push(Key.LCTRL);
-                else if (code === 'ControlRight')
-                    result.push(Key.RCTRL);
-                break;
-            case 18:
-                if (code === 'AltLeft')
-                    result.push(Key.LALT);
-                else if (code === 'AltRight')
-                    result.push(Key.RALT);
-                break;
-            case 46:
-                if (code === 'NumpadDecimal')
-                    result.push(Key.NUMPAD_DECIMAL);
-                else if (code === 'Delete')
-                    result.push(Key.DELETE);
-                break;
-        }
+        const result: (string | number)[] = KeysForKeyCode(keyCode, code);
+        result.push(keyCode, String.fromCharCode(keyCode).toLowerCase());
         return result;
     };
 }

@@ -140,105 +140,281 @@ export enum Key {
 };
 export const Keys = enumToList(Key);
 
-export const KeysByKeyCode: { [keyCode: number]: Key[] } = {
-    8: [Key.BACKSPACE],
-    9: [Key.TAB],
-    16: [Key.SHIFT],
-    17: [Key.CTRL],
-    18: [Key.ALT],
-    19: [Key.PAUSE_BREAK],
-    20: [Key.CAPS],
-    27: [Key.ESC],
-    32: [Key.SPACE],
-    33: [Key.PAGE_UP],
-    34: [Key.PAGE_DOWN],
-    35: [Key.END],
-    36: [Key.HOME],
-    37: [Key.LEFT],
-    38: [Key.UP],
-    39: [Key.RIGHT],
-    40: [Key.DOWN],
-    45: [Key.INSERT],
-    48: [Key.ZERO, Key.CLOSE_PAREN],
-    49: [Key.ONE, Key.BANG, Key.EXCLAMATION_POINT],
-    50: [Key.TWO, Key.AT],
-    51: [Key.THREE, Key.HASH, Key.POUND],
-    52: [Key.FOUR, Key.DOLLAR],
-    53: [Key.FIVE, Key.PERCENT],
-    54: [Key.SIX, Key.CARET, Key.UP_CARET],
-    55: [Key.SEVEN, Key.AMPERSAND],
-    56: [Key.EIGHT, Key.ASTERISK],
-    57: [Key.NINE, Key.OPEN_PAREN],
-    65: [Key.A],
-    66: [Key.B],
-    67: [Key.C],
-    68: [Key.D],
-    69: [Key.E],
-    70: [Key.F],
-    71: [Key.G],
-    72: [Key.H],
-    73: [Key.I],
-    74: [Key.J],
-    75: [Key.K],
-    76: [Key.L],
-    77: [Key.M],
-    78: [Key.N],
-    79: [Key.O],
-    80: [Key.P],
-    81: [Key.Q],
-    82: [Key.R],
-    83: [Key.S],
-    84: [Key.T],
-    85: [Key.U],
-    86: [Key.V],
-    87: [Key.W],
-    88: [Key.X],
-    89: [Key.Y],
-    90: [Key.Z],
-    91: [Key.LEFT_WINDOWS],
-    92: [Key.RIGHT_WINDOWS],
-    93: [Key.CONTEXT_MENU, Key.SELECT],
-    96: [Key.NUMPAD_ZERO],
-    97: [Key.NUMPAD_ONE],
-    98: [Key.NUMPAD_TWO],
-    99: [Key.NUMPAD_THREE],
-    100: [Key.NUMPAD_FOUR],
-    101: [Key.NUMPAD_FIVE],
-    102: [Key.NUMPAD_SIX],
-    103: [Key.NUMPAD_SEVEN],
-    104: [Key.NUMPAD_EIGHT],
-    105: [Key.NUMPAD_NINE],
-    106: [Key.NUMPAD_MULTIPLY],
-    107: [Key.NUMPAD_ADD],
-    109: [Key.NUMPAD_SUBTRACT],
-    110: [Key.NUMPAD_DECIMAL],
-    111: [Key.NUMPAD_DIVIDE],
-    112: [Key.F1],
-    113: [Key.F2],
-    114: [Key.F3],
-    115: [Key.F4],
-    116: [Key.F5],
-    117: [Key.F6],
-    118: [Key.F7],
-    119: [Key.F8],
-    120: [Key.F9],
-    121: [Key.F10],
-    122: [Key.F11],
-    123: [Key.F12],
-    144: [Key.NUM_LOCK],
-    145: [Key.SCROLL_LOCK],
-    186: [Key.SEMI_COLON, Key.COLON],
-    187: [Key.EQUALS, Key.PLUS],
-    188: [Key.COMMA, Key.LEFT_CARET],
-    189: [Key.DASH, Key.HYPHEN, Key.MINUS, Key.UNDERSCORE],
-    190: [Key.PERIOD, Key.RIGHT_CARET],
-    191: [Key.FORWARD_SLASH, Key.QUESTION_MARK],
-    192: [Key.TICK, Key.TILDA],
-    219: [Key.OPEN_SQUARE_BRACKET, Key.OPEN_CURLY_BRACKET],
-    220: [Key.BACK_SLASH, Key.BAR, Key.PIPE],
-    221: [Key.CLOSE_SQUARE_BRACKET, Key.CLOSE_CURLY_BRACKET],
-    222: [Key.DOUBLE_QUOTE, Key.SINGLE_QUOTE, Key.APOSTROPHE]
+const KeyCodeByKey: { [key in Key]: number } = {
+    [Key.BACKSPACE]: 8,
+    [Key.TAB]: 9,
+    [Key.ENTER]: 13,
+    [Key.RETURN]: 13,
+    [Key.NUMPAD_ENTER]: 13,
+    [Key.SHIFT]: 16,
+    [Key.LSHIFT]: 16,
+    [Key.RSHIFT]: 16,
+    [Key.CTRL]: 17,
+    [Key.LCTRL]: 17,
+    [Key.RCTRL]: 17,
+    [Key.ALT]: 18,
+    [Key.LALT]: 18,
+    [Key.RALT]: 18,
+    [Key.PAUSE_BREAK]: 19,
+    [Key.CAPS]: 20,
+    [Key.ESC]: 27,
+    [Key.SPACE]: 32,
+    [Key.PAGE_UP]: 33,
+    [Key.PAGE_DOWN]: 34,
+    [Key.END]: 35,
+    [Key.HOME]: 36,
+    [Key.LEFT]: 37,
+    [Key.UP]: 38,
+    [Key.RIGHT]: 39,
+    [Key.DOWN]: 40,
+    [Key.INSERT]: 45,
+    [Key.DELETE]: 46,
+    [Key.CLOSE_PAREN]: 48,
+    [Key.ZERO]: 48,
+    [Key.EXCLAMATION_POINT]: 49,
+    [Key.BANG]: 49,
+    [Key.ONE]: 49,
+    [Key.AT]: 50,
+    [Key.TWO]: 50,
+    [Key.POUND]: 51,
+    [Key.HASH]: 51,
+    [Key.THREE]: 51,
+    [Key.DOLLAR]: 52,
+    [Key.FOUR]: 52,
+    [Key.PERCENT]: 53,
+    [Key.FIVE]: 53,
+    [Key.UP_CARET]: 54,
+    [Key.CARET]: 54,
+    [Key.SIX]: 54,
+    [Key.AMPERSAND]: 55,
+    [Key.SEVEN]: 55,
+    [Key.ASTERISK]: 56,
+    [Key.EIGHT]: 56,
+    [Key.OPEN_PAREN]: 57,
+    [Key.NINE]: 57,
+    [Key.A]: 65,
+    [Key.B]: 66,
+    [Key.C]: 67,
+    [Key.D]: 68,
+    [Key.E]: 69,
+    [Key.F]: 70,
+    [Key.G]: 71,
+    [Key.H]: 72,
+    [Key.I]: 73,
+    [Key.J]: 74,
+    [Key.K]: 75,
+    [Key.L]: 76,
+    [Key.M]: 77,
+    [Key.N]: 78,
+    [Key.O]: 79,
+    [Key.P]: 80,
+    [Key.Q]: 81,
+    [Key.R]: 82,
+    [Key.S]: 83,
+    [Key.T]: 84,
+    [Key.U]: 85,
+    [Key.V]: 86,
+    [Key.W]: 87,
+    [Key.X]: 88,
+    [Key.Y]: 89,
+    [Key.Z]: 90,
+    [Key.LEFT_WINDOWS]: 91,
+    [Key.RIGHT_WINDOWS]: 92,
+    [Key.SELECT]: 93,
+    [Key.CONTEXT_MENU]: 93,
+    [Key.NUMPAD_ZERO]: 96,
+    [Key.NUMPAD_ONE]: 97,
+    [Key.NUMPAD_TWO]: 98,
+    [Key.NUMPAD_THREE]: 99,
+    [Key.NUMPAD_FOUR]: 100,
+    [Key.NUMPAD_FIVE]: 101,
+    [Key.NUMPAD_SIX]: 102,
+    [Key.NUMPAD_SEVEN]: 103,
+    [Key.NUMPAD_EIGHT]: 104,
+    [Key.NUMPAD_NINE]: 105,
+    [Key.NUMPAD_MULTIPLY]: 106,
+    [Key.NUMPAD_ADD]: 107,
+    [Key.NUMPAD_SUBTRACT]: 109,
+    [Key.NUMPAD_DECIMAL]: 110,
+    [Key.NUMPAD_DIVIDE]: 111,
+    [Key.F1]: 112,
+    [Key.F2]: 113,
+    [Key.F3]: 114,
+    [Key.F4]: 115,
+    [Key.F5]: 116,
+    [Key.F6]: 117,
+    [Key.F7]: 118,
+    [Key.F8]: 119,
+    [Key.F9]: 120,
+    [Key.F10]: 121,
+    [Key.F11]: 122,
+    [Key.F12]: 123,
+    [Key.NUM_LOCK]: 144,
+    [Key.SCROLL_LOCK]: 145,
+    [Key.COLON]: 186,
+    [Key.SEMI_COLON]: 186,
+    [Key.PLUS]: 187,
+    [Key.EQUALS]: 187,
+    [Key.LEFT_CARET]: 188,
+    [Key.COMMA]: 188,
+    [Key.UNDERSCORE]: 189,
+    [Key.MINUS]: 189,
+    [Key.HYPHEN]: 189,
+    [Key.DASH]: 189,
+    [Key.RIGHT_CARET]: 190,
+    [Key.PERIOD]: 190,
+    [Key.QUESTION_MARK]: 191,
+    [Key.FORWARD_SLASH]: 191,
+    [Key.TILDA]: 192,
+    [Key.TICK]: 192,
+    [Key.OPEN_CURLY_BRACKET]: 219,
+    [Key.OPEN_SQUARE_BRACKET]: 219,
+    [Key.PIPE]: 220,
+    [Key.BAR]: 220,
+    [Key.BACK_SLASH]: 220,
+    [Key.CLOSE_CURLY_BRACKET]: 221,
+    [Key.CLOSE_SQUARE_BRACKET]: 221,
+    [Key.APOSTROPHE]: 222,
+    [Key.SINGLE_QUOTE]: 222,
+    [Key.DOUBLE_QUOTE]: 222,
 };
+const KeysByKeyCode: { [keyCode: number]: Key[] } = Object.keys(KeyCodeByKey).reduce((acc, key) => {
+    const keyCode = KeyCodeByKey[key];
+    if(!(keyCode in acc))
+        acc[keyCode] = [];
+    acc[keyCode].push(key);
+    return acc;
+}, {} as { [key in Key]: number });
+
+export function KeyCodeForKey(key: Key): { keyCode: number, code?: string } {
+    const keyCode = KeyCodeByKey[key];
+    switch(key)
+    {
+        case Key.ENTER:
+        case Key.RETURN:
+            return { keyCode, code: 'Enter' }
+        case Key.NUMPAD_ENTER:
+            return { keyCode, code: 'NumpadEnter' };
+        case Key.LSHIFT:
+            return { keyCode, code: 'ShiftLeft' };
+        case Key.RSHIFT:
+            return { keyCode, code: 'ShiftRight' };
+        case Key.LCTRL:
+            return { keyCode, code: 'ControlLeft' };
+        case Key.RCTRL:
+            return { keyCode, code: 'ControlRight' };
+        case Key.LALT:
+            return { keyCode, code: 'AltLeft' };
+        case Key.RALT:
+            return { keyCode, code: 'AltRight' };
+        case Key.DELETE:
+            return { keyCode, code: 'Delete '};
+        default:
+            return { keyCode };
+    }
+}
+
+export function KeysForKeyCode(keyCode: number, code?: string): Key[] {
+    const result: Key[] = [];
+    switch(keyCode)
+    {
+        case 13:
+            if(code === 'Enter')
+                result.push(Key.ENTER, Key.RETURN);
+            if(code === 'NumpadEnter')
+                result.push(Key.NUMPAD_ENTER);
+            break;
+        case 16:
+            result.push(Key.SHIFT);
+            if (code === 'ShiftLeft')
+                result.push(Key.LSHIFT);
+            else if (code === 'ShiftRight')
+                result.push(Key.RSHIFT);
+            break;
+        case 17:
+            result.push(Key.CTRL);
+            if (code === 'ControlLeft')
+                result.push(Key.LCTRL);
+            else if (code === 'ControlRight')
+                result.push(Key.RCTRL);
+            break;
+        case 18:
+            result.push(Key.ALT);
+            if (code === 'AltLeft')
+                result.push(Key.LALT);
+            else if (code === 'AltRight')
+                result.push(Key.RALT);
+            break;
+        case 45:
+            if (code === 'Numpad0')
+                result.push(Key.NUMPAD_ZERO);
+            else if(code === 'Insert')
+                result.push(Key.INSERT);
+            break;
+        case 35:
+            if (code === 'Numpad1')
+                result.push(Key.NUMPAD_ONE);
+            else if(code === 'End')
+                result.push(Key.END);
+            break;
+        case 40:
+            if (code === 'Numpad2')
+                result.push(Key.NUMPAD_TWO);
+            else if(code === 'ArrowDown')
+                result.push(Key.DOWN);
+            break;
+        case 34:
+            if (code === 'Numpad3')
+                result.push(Key.NUMPAD_THREE);
+            else if(code === 'PageDown')
+                result.push(Key.DOWN);
+            break;
+        case 37:
+            if (code === 'Numpad4')
+                result.push(Key.NUMPAD_FOUR);
+            else if(code === 'ArrowLeft')
+                result.push(Key.LEFT);
+            break;
+        case 12:
+            if (code === 'Numpad5')
+                result.push(Key.NUMPAD_FIVE);
+            break;
+        case 39:
+            if (code === 'Numpad6')
+                result.push(Key.NUMPAD_SIX);
+            else if(code === 'ArrowRight')
+                result.push(Key.RIGHT);
+            break;
+        case 36:
+            if (code === 'Numpad7')
+                result.push(Key.NUMPAD_SEVEN);
+            else if(code === 'Home')
+                result.push(Key.HOME);
+            break;
+        case 38:
+            if (code === 'Numpad8')
+                result.push(Key.NUMPAD_EIGHT);
+            else if(code === 'ArrowUp')
+                result.push(Key.UP);
+            break;
+        case 33:
+            if (code === 'Numpad9')
+                result.push(Key.NUMPAD_NINE);
+            else if(code === 'PageUp')
+                result.push(Key.PAGE_UP);
+            break;
+        case 46:
+            if (code === 'NumpadDecimal')
+                result.push(Key.NUMPAD_DECIMAL);
+            else if (code === 'Delete')
+                result.push(Key.DELETE);
+            break;
+        default:
+            result.push(...KeysByKeyCode[keyCode]);
+            break;
+    }
+    return result;
+}
 
 export const CharactersByKeyCode: { [key: number]: { lower: string, upper: string } } = {
     [9]: { lower: '\t', upper: '\t' },
@@ -306,4 +482,3 @@ export const CharactersByKeyCode: { [key: number]: { lower: string, upper: strin
     [220]: { lower: '\\', upper: '|' },
     [221]: { lower: ']', upper: '}' },
     [222]: { lower: '\'', upper: '"' },
-}
