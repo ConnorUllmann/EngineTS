@@ -1,6 +1,6 @@
 import { Entity } from './entity';
 import { Camera } from './camera';
-import { IMouse, Mouse } from './mouse';
+import { Mouse } from './mouse';
 import { Color } from '../visuals/color';
 import { Keyboard } from './keyboard';
 import { Gamepads } from './gamepads';
@@ -19,7 +19,7 @@ export class World {
     public readonly sounds: Sounds;
     public readonly camera: Camera;
     private readonly _mouse: Mouse;
-    public get mouse(): IMouse { return this._mouse; }
+    public get mouse(): Mouse { return this._mouse; }
     public readonly keyboard: Keyboard;
     public readonly gamepads: Gamepads;
 
@@ -89,6 +89,7 @@ export class World {
 
         this._mouse.start();
         this.keyboard.start();
+        this.gamepads.start();
 
         this.startLoop();
     }

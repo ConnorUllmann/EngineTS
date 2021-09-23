@@ -1,12 +1,19 @@
 import { Point } from '../geometry/point';
 import { IPoint } from '@engine-ts/geometry/interfaces';
 import { Camera } from './camera';
-import { DeepReadonly } from './utils';
+import { DeepReadonly, enumToList } from './utils';
 
 export enum MouseButton {
     Left = 0,
     Right = 2
 }
+export const MouseButtons = enumToList(MouseButton);
+
+export enum MouseScroll {
+    Up = 'Up',
+    Down = 'Down',
+}
+export const MouseScrolls = enumToList(MouseScroll);
 
 export interface IMouse {
     readonly leftReleased: boolean
@@ -183,7 +190,14 @@ export class Mouse extends Point implements IMouse {
 
     constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: Camera) { super(); }
 
-    public destroy(): void {
+    private started = false;
+
+    destroy() {
+        if(!this.started)
+            return;
+        
+        this.started = false;
+
         if(this.touchscreen) {
             document.body.removeEventListener("touchstart", this.touchStartHandler);
             document.body.removeEventListener("touchend", this.touchEndHandler);
@@ -198,7 +212,12 @@ export class Mouse extends Point implements IMouse {
         this.canvas.removeEventListener('wheel', this.wheelHandler);
     }
 
-    public start(): void {
+    start() {
+        if(this.started)
+            return;
+        
+        this.started = true;
+        
         if(this.touchscreen) {
             document.body.addEventListener("touchstart", this.touchStartHandler);
             document.body.addEventListener("touchend", this.touchEndHandler);
@@ -239,6 +258,45 @@ export class Mouse extends Point implements IMouse {
         this.scroll.x = 0;
         this.scroll.y = 0;
         this.moved = false;
+    }
+
+    public allPressed(): (MouseButton | MouseScroll)[] {
+        const result: (MouseButton | MouseScroll)[] = [];
+        if(this.leftPressed)
+            result.push(MouseButton.Left);
+        if(this.rightPressed)
+            result.push(MouseButton.Right);
+        if(this.scroll.y > 0 && this.scrollPrevious.y <= 0)
+            result.push(MouseScroll.Down);
+        if(this.scroll.y < 0 && this.scrollPrevious.y >= 0)
+            result.push(MouseScroll.Up);
+        return result;
+    }
+
+    public allDown(): (MouseButton | MouseScroll)[] {
+        const result: (MouseButton | MouseScroll)[] = [];
+        if(this.leftDown)
+            result.push(MouseButton.Left);
+        if(this.rightDown)
+            result.push(MouseButton.Right);
+        if(this.scroll.y > 0)
+            result.push(MouseScroll.Down);
+        if(this.scroll.y < 0)
+            result.push(MouseScroll.Up);
+        return result;
+    }
+
+    public allReleased(): (MouseButton | MouseScroll)[] {
+        const result: (MouseButton | MouseScroll)[] = [];
+        if(this.leftReleased)
+            result.push(MouseButton.Left);
+        if(this.rightReleased)
+            result.push(MouseButton.Right);
+        if(this.scroll.y <= 0 && this.scrollPrevious.y > 0)
+            result.push(MouseScroll.Down);
+        if(this.scroll.y >= 0 && this.scrollPrevious.y < 0)
+            result.push(MouseScroll.Up);
+        return result;
     }
 
     private leftMouseDownEvent(): void {

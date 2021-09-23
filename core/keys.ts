@@ -139,6 +139,7 @@ export enum Key {
     PIPE = 'PIPE'
 };
 export const Keys = enumToList(Key);
+export const KeysSet = new Set(Keys);
 
 const KeyCodeByKey: { [key in Key]: number } = {
     [Key.BACKSPACE]: 8,

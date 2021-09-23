@@ -1,4 +1,4 @@
-import { KeysForKeyCode } from './keys';
+import { Key, Keys, KeysForKeyCode, KeysSet } from './keys';
 
 export class Keyboard {
     public readonly down: { [id: string]: boolean } = {};
@@ -42,13 +42,25 @@ export class Keyboard {
 
     constructor() {}
 
+    private started = false;
+
     destroy() {
+        if(!this.started)
+            return;
+        
+        this.started = false;
+        
         document.removeEventListener("keydown", this.keyDownHandler, false);
         document.removeEventListener("keyup", this.keyUpHandler, false);
         document.removeEventListener("message", this.messageHandler, false);
     }
     
     start() {
+        if(this.started)
+            return;
+        
+        this.started = true;
+
         document.addEventListener("keydown", this.keyDownHandler, false);
         document.addEventListener("keyup", this.keyUpHandler, false);
 
@@ -121,6 +133,18 @@ export class Keyboard {
 
     update() {
         this.resetInputs();
+    }
+
+    public allDown(): Key[] {
+        return Object.keys(this.down).filter(key => KeysSet.has(key as Key)) as Key[];
+    }
+
+    public allPressed(): Key[] {
+        return Object.keys(this.pressed).filter(key => KeysSet.has(key as Key)) as Key[];
+    }
+
+    public allReleased(): Key[] {
+        return Object.keys(this.released).filter(key => KeysSet.has(key as Key)) as Key[];
     }
 
     private static keysForKeyEvent(keyCode: number, code?: string): (string | number)[] {
