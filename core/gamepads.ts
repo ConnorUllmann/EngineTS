@@ -1,6 +1,6 @@
 import { Point } from '@engine-ts/geometry/point';
 import { IPoint } from '@engine-ts/geometry/interfaces';
-import { AnalogDirectionButton, AnalogDirectionButtons, Button } from './buttons';
+import { AnalogDirectionButton, AnalogDirectionButtons, Button, Buttons } from './buttons';
 import { Geometry } from '@engine-ts/geometry/geometry';
 
 export class Gamepads {
@@ -12,6 +12,8 @@ export class Gamepads {
     private downByIndex: { [gamepadId: number]: { [button: string]: boolean} } = {};
     private pressedByIndex: { [gamepadId: number]: { [button: string]: boolean} } = {};
     private releasedByIndex: { [gamepadId: number]: { [button: string]: boolean} } = {};
+
+    public active = true;
 
     private static readonly TriggerBuffer: number = 0.1;
     private static readonly DeadzoneDefault = 0.3;
@@ -46,6 +48,35 @@ export class Gamepads {
 
     constructor() {}
 
+    public destroy() {}
+    public start() {}
+
+    public resetInputs() {
+        for(let key in this.leftAnalogStickByIndex)
+            this.leftAnalogStickByIndex[key].x = this.leftAnalogStickByIndex[key].y = 0;
+        for(let key in this.rightAnalogStickByIndex)
+            this.rightAnalogStickByIndex[key].x = this.rightAnalogStickByIndex[key].y = 0;
+        for(let key in this.leftTriggerByIndex)
+            this.leftTriggerByIndex[key] = 0;
+        for(let key in this.rightTriggerByIndex)
+            this.rightTriggerByIndex[key] = 0;
+        for(let gamepadId in this.downByIndex) {
+            const value = this.downByIndex[gamepadId];
+            for(let button in value)
+                value[button] = false;
+        }
+        for(let gamepadId in this.pressedByIndex) {
+            const value = this.pressedByIndex[gamepadId];
+            for(let button in value)
+                value[button] = false;
+        }
+        for(let gamepadId in this.releasedByIndex) {
+            const value = this.releasedByIndex[gamepadId];
+            for(let button in value)
+                value[button] = false;
+        }
+    }
+
     // only works in chrome
     // https://gitlab.com/gilrs-project/gilrs/-/issues/81
     public vibrate(duration: number, weakMagnitude: number=1, strongMagnitude: number = 1, gamepadId: number=0) {
@@ -60,7 +91,7 @@ export class Gamepads {
     }
 
     public update() {
-        if(!Gamepads.AreAvailable)
+        if(!Gamepads.AreAvailable || !this.active)
             return;
 
         const gamepads = this.gamepads;
@@ -199,5 +230,17 @@ export class Gamepads {
             || Geometry.Point.LengthSq(this.rightAnalogStick(gamepadId)) > 0
             || Object.values(this.pressedByIndex[gamepadId] || {}).any(o => o)
             || Object.values(this.releasedByIndex[gamepadId] || {}).any(o => o);
+    }
+
+    public allDown(gamepadId: number=0): Button[] {
+        return Buttons.filter(button => this.down(button, gamepadId));
+    }
+
+    public allPressed(gamepadId: number=0): Button[] {
+        return Buttons.filter(button => this.pressed(button, gamepadId));
+    }
+
+    public allReleased(gamepadId: number=0): Button[] {
+        return Buttons.filter(button => this.released(button, gamepadId));
     }
 }
